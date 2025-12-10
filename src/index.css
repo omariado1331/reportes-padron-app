@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Estilos personalizados */
+@layer components {
+  .sidebar-transition {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .menu-item-active {
+    @apply relative;
+  }
+  
+  .menu-item-active::before {
+    content: '';
+    @apply absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-r;
+  }
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
