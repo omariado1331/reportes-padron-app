@@ -28,6 +28,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import RegistroDiarioForm from '../components/RegistroDiarioForm';
+import HistorialReportes from '../components/HistorialReportes';
 
 type MenuItem = 'informacion' | 'registro' | 'historial';
 
@@ -117,55 +118,56 @@ const OperadorDashboard: React.FC = () => {
   }
 
   // Componente del menú lateral
-  const Sidebar = () => (
-    <>
-      {/* Overlay para móviles */}
-      {sidebarOpen && window.innerWidth < 768 && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+const Sidebar = () => (
+  <>
+    {/* Overlay para móviles */}
+    {sidebarOpen && window.innerWidth < 768 && (
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={() => setSidebarOpen(false)}
+      />
+    )}
+
+    <aside className={`
+      fixed md:sticky md:top-0
+      left-0 
+      h-screen 
+      bg-gradient-to-b from-blue-900 to-blue-800 
+      text-white 
+      flex flex-col 
+      transition-all duration-300 ease-in-out
+      z-50
+      ${sidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20'}
+    `}>
+      {/* Logo y Toggle */}
+      <div className="p-4 border-b border-blue-700 flex items-center justify-between flex-shrink-0">
+        {sidebarOpen ? (
+          <div className="flex items-center space-x-3">
+            
+            <h3 className="text-lg font-bold hidden md:block">EMPADRONAMIENTO MASIVO SUBNACIONALES 2026</h3>
+          </div>
+        ) : (
+          <div className="flex justify-center w-full">
+            <Home className="h-6 w-6" />
+          </div>
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="text-blue-200 hover:text-white hidden md:block"
+        >
+          {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+        </button>
+        <button
           onClick={() => setSidebarOpen(false)}
-        />
-      )}
+          className="text-blue-200 hover:text-white md:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
 
-      <aside className={`
-        fixed md:relative 
-        top-0 left-0 
-        h-screen 
-        bg-gradient-to-b from-blue-900 to-blue-800 
-        text-white 
-        flex flex-col 
-        transition-all duration-300 ease-in-out
-        z-50
-        ${sidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20'}
-      `}>
-        {/* Logo y Toggle */}
-        <div className="p-4 border-b border-blue-700 flex items-center justify-between">
-          {sidebarOpen ? (
-            <div className="flex items-center space-x-3">
-              
-              <h3 className="text-lg font-bold hidden md:block">EMPADRONAMIENTO MASIVO SUBNACIONALES 2026</h3>
-            </div>
-          ) : (
-            <div className="flex justify-center w-full">
-              <Home className="h-6 w-6" />
-            </div>
-          )}
-          <button
-            onClick={toggleSidebar}
-            className="text-blue-200 hover:text-white hidden md:block"
-          >
-            {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
-          </button>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-blue-200 hover:text-white md:hidden"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Menú de Navegación */}
-        <nav className="flex-1 p-4 space-y-2">
+      {/* Menú de Navegación - Con scroll propio */}
+      <nav className="flex-1 overflow-y-auto py-4">
+        <div className="space-y-2 px-4">
           <div 
             className={`p-3 rounded-lg cursor-pointer transition-all ${activeMenu === 'informacion' ? 'bg-blue-700' : 'hover:bg-blue-700/50'}`}
             onClick={() => handleMenuClick('informacion')}
@@ -195,33 +197,34 @@ const OperadorDashboard: React.FC = () => {
               {(sidebarOpen || window.innerWidth < 768) && <span>Historial de Registros</span>}
             </div>
           </div>
-        </nav>
-
-        {/* Información del Usuario y Logout */}
-        <div className="border-t border-blue-700 p-4">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-blue-600 p-2 rounded-full">
-              <User className="h-4 w-4" />
-            </div>
-            {(sidebarOpen || window.innerWidth < 768) && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.username}</p>
-                <p className="text-xs text-blue-200 truncate">Operador</p>
-              </div>
-            )}
-          </div>
-          
-          <button
-            onClick={handleLogout}
-            className={`w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition ${!(sidebarOpen || window.innerWidth < 768) && 'justify-center'}`}
-          >
-            <LogOut className="h-4 w-4" />
-            {(sidebarOpen || window.innerWidth < 768) && <span>Cerrar Sesión</span>}
-          </button>
         </div>
-      </aside>
-    </>
-  );
+      </nav>
+
+      {/* Información del Usuario y Logout - Fijo al fondo */}
+      <div className="border-t border-blue-700 p-4 flex-shrink-0 mt-auto">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-blue-600 p-2 rounded-full">
+            <User className="h-4 w-4" />
+          </div>
+          {(sidebarOpen || window.innerWidth < 768) && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user.username}</p>
+              <p className="text-xs text-blue-200 truncate">Operador</p>
+            </div>
+          )}
+        </div>
+        
+        <button
+          onClick={handleLogout}
+          className={`w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition ${!(sidebarOpen || window.innerWidth < 768) && 'justify-center'}`}
+        >
+          <LogOut className="h-4 w-4" />
+          {(sidebarOpen || window.innerWidth < 768) && <span>Cerrar Sesión</span>}
+        </button>
+      </div>
+    </aside>
+  </>
+);
 
   // Contenido Principal
   const MainContent = () => (
@@ -492,11 +495,8 @@ const OperadorDashboard: React.FC = () => {
 
         {/* Panel de Historial de Registros */}
         {activeMenu === 'historial' && (
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3 md:mb-4">Historial de Registros Diarios</h3>
-              <p className="text-gray-600 text-sm md:text-base">Aquí se mostrará el historial completo de registros...</p>
-            </div>
+          <div className='max-w-7xl mx-auto'>
+            <HistorialReportes operadorId={user.operador.id_operador}/>
           </div>
         )}
       </div>
@@ -509,7 +509,7 @@ const OperadorDashboard: React.FC = () => {
       <Sidebar />
       
       {/* Contenido Principal */}
-      <div className="flex-1 flex flex-col overflow-hidden w-full md:w-auto">
+      <div className="flex-1 flex flex-col min-h-screen w-full md:w-auto">
         <MainContent />
       </div>
     </div>

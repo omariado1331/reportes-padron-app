@@ -349,9 +349,9 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
     if (estacionBloqueada) {
       const confirmar = window.confirm(
         '⚠️ ADVERTENCIA\n\n' +
-        'Al desbloquear el número de estación, podrás modificarlo manualmente.\n' +
-        'Esto puede afectar la integridad de los datos.\n\n' +
-        '¿Estás seguro de continuar?'
+        'Al desbloquear, podrás cambiar el número de Estación.\n' +
+        'Solo modifica si realizaste registros desde otra estación que no sea tu estación asignada.\n\n' +
+        '¿Estás seguro de continuar? Se verificará el número ingresado'
       );
       
       if (confirmar) {

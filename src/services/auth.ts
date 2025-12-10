@@ -132,6 +132,31 @@ export interface Estacion {
   contador_c: number;
 }
 
+// Interfaz para el historial de Reporte Diarios
+export interface ReporteDiarioHistorico {
+  success: boolean;
+  operador_id: number;
+  nombre_operador: string;
+  total_reportes: number;
+  data: ReporteDiarioItem[];
+}
+
+export interface ReporteDiarioItem {
+  codigo_estacion: string;
+  nro_estacion: number;
+  fecha_reporte: string;
+  fecha_registro: string;
+  registro_c: number;
+  registro_r: number;
+  incidencias: string;
+  observaciones: string;
+  punto_empadronamiento: string;
+  municipio: string;
+  provincia: string;
+  departamento: string;
+  nombre_ruta: string;
+}
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await axios.post(`${API_URL}/api/token/`, {
@@ -391,6 +416,25 @@ async buscarEstacionPorNumero(nroEstacion: string): Promise<Estacion | undefined
       return undefined;
     }
 },
+
+  async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHistorico> {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No autenticado');
+    }
+
+    const response = await axios.get<ReporteDiarioHistorico>(
+      `${API_URL}/api/operadores/${operadorId}/reportes-diarios/`, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    
+    return response.data;
+  },
+
 
 };
 
