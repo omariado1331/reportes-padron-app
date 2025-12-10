@@ -159,7 +159,7 @@ export interface ReporteDiarioItem {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const response = await axios.post(`${API_URL}/api/token/`, {
+    const response = await axios.post(`${API_URL}api/token/`, {
       username: credentials.username,
       password: credentials.password
     });
@@ -320,7 +320,7 @@ export const authService = {
       throw new Error('No autenticado');
     }
 
-    const response = await axios.get(`${API_URL}/info-operador/${operadorId}/`, {
+    const response = await axios.get(`${API_URL}info-operador/${operadorId}/`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -363,7 +363,7 @@ export const authService = {
       centro_empadronamiento: centroEmpadronamientoId
     };
 
-    const response = await axios.post(`${API_URL}/api/reportesdiarios/`, payload, {
+    const response = await axios.post(`${API_URL}api/reportesdiarios/`, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
