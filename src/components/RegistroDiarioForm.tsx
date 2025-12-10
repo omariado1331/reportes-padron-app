@@ -142,8 +142,8 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
     const finalC = watchContadores[1];
     const saltosC = watch('nro_saltos_c') || "0";
     if (inicialC && finalC) {
-      const dif = parseInt(finalC) - parseInt(inicialC) - parseInt(saltosC);
-      return dif >= 0 ? dif : 0;
+      const dif = parseInt(finalC) - parseInt(inicialC) - parseInt(saltosC) + 1;
+      return dif > 0 ? dif : 0;
     }
     return 0;
   }, [watchContadores,  watch('nro_saltos_c')]);
@@ -153,8 +153,8 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
     const finalR = watchContadores[3];
     const saltosR = watch('nro_saltos_r') || "0";
     if (inicialR && finalR) {
-      const dif = parseInt(finalR) - parseInt(inicialR) - parseInt(saltosR);
-      return dif >= 0 ? dif : 0;
+      const dif = parseInt(finalR) - parseInt(inicialR) - parseInt(saltosR) + 1;
+      return dif > 0 ? dif : 0;
     }
     return 0;
   }, [watchContadores, watch('nro_saltos_r')]);

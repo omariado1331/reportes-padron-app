@@ -342,14 +342,14 @@ export const authService = {
     const contadorFinalR = `R-${reporte.nro_estacion}-${reporte.contador_final_r.padStart(4, '0')}-${reporte.nro_tramite_r}`;
 
     // Calcular registros
-    const registroC = parseInt(reporte.contador_final_c) - parseInt(reporte.contador_inicial_c) - parseInt(reporte.nro_saltos_c || "0");
-    const registroR = parseInt(reporte.contador_final_r) - parseInt(reporte.contador_inicial_r) - parseInt(reporte.nro_saltos_r || "0");
+    const registroC = parseInt(reporte.contador_final_c) - parseInt(reporte.contador_inicial_c) - parseInt(reporte.nro_saltos_c || "0") + 1;
+    const registroR = parseInt(reporte.contador_final_r) - parseInt(reporte.contador_inicial_r) - parseInt(reporte.nro_saltos_r || "0") + 1;
 
     const payload: ReporteDiario = {
       fecha_reporte: `${reporte.fecha_reporte}T00:00:00Z`,
       contador_inicial_c: contadorInicialC,
       contador_final_c: contadorFinalC,
-      registro_c: registroC >= 0 ? registroC : 0,
+      registro_c: registroC > 0 ? registroC : 0,
       contador_inicial_r: contadorInicialR,
       contador_final_r: contadorFinalR,
       registro_r: registroR >= 0 ? registroR : 0,
