@@ -20,7 +20,7 @@ import {
   ChevronDown,
   X,
   Check,
-  Search
+  //Search
 } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
@@ -56,7 +56,7 @@ const reporteSchema = z.object({
 }).refine(data => {
   const inicialC = parseInt(data.contador_inicial_c);
   const finalC = parseInt(data.contador_final_c);
-  const saltosC = parseInt(data.nro_saltos_c || "0");
+  //const saltosC = parseInt(data.nro_saltos_c || "0");
   return finalC >= inicialC;
 }, {
   message: "El contador final C no puede ser menor que el inicial",
@@ -64,7 +64,7 @@ const reporteSchema = z.object({
 }).refine(data => {
   const inicialR = parseInt(data.contador_inicial_r);
   const finalR = parseInt(data.contador_final_r);
-  const saltosR = parseInt(data.nro_saltos_r || "0");
+  //const saltosR = parseInt(data.nro_saltos_r || "0");
   return finalR >= inicialR;
 }, {
   message: "El contador final R no puede ser menor que el inicial",
@@ -274,7 +274,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
     };
 
     const validarEstacion = async (nroEstacionStr: string) => {
-    const nroEstacionNum = parseInt(nroEstacionStr);
+    //const nroEstacionNum = parseInt(nroEstacionStr);
     
     if (!/^\d{5}$/.test(nroEstacionStr)) {
         setEstacionValidada(null);
