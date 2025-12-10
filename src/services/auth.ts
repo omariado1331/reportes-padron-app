@@ -1,7 +1,7 @@
 import axios from 'axios';
 //import { get } from 'react-hook-form';
 
-const API_URL = 'http://34.176.50.193:8000'; // URL API
+const API_URL = const API_URL = '/api/'; // URL API
 
 // Cuerpo del login
 interface LoginCredentials {
