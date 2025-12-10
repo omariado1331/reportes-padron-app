@@ -54,15 +54,22 @@ const Login: React.FC = () => {
 
     try {
       await authService.login(data);
-      
       // Redirigir según el rol
       if (data.role === 'Operador') {
         navigate('/operador');
       } else {
         navigate('/coordinador');
       }
-    } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión. Verifique sus credenciales.');
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setError('Usuario o contraseña incorrectos');
+      } else if (error.message.includes('no tiene una estación asignada')) {
+        setError(error.message);
+      } else if (error.message.includes('no tiene el rol de')) {
+        setError('El usuario no tiene el rol seleccionado');
+      } else {
+        setError(error.message || 'Error al iniciar sesión');
+      }
     } finally {
       setIsLoading(false);
     }

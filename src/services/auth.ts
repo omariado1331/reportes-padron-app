@@ -152,6 +152,17 @@ export const authService = {
     if (credentials.role === 'Operador' && !data.user.operador) {
       throw new Error('El operador no tiene información asignada');
     }
+
+    // Verificar que el operador tenga estación asignada (id_estacion diferente de 0)
+    if (credentials.role === 'Operador' && data.user.operador) {
+      if (data.user.operador.id_estacion === 0) {
+        throw new Error('El operador no tiene una estación asignada. Contacte a soporte.');
+      }
+      
+      if (data.user.operador.nro_estacion === 0) {
+        throw new Error('El operador no tiene una estación asignada. Contacte a soporte.');
+      }
+    }
     
     if (credentials.role === 'Coordinador' && !data.user.coordinador) {
       throw new Error('El coordinador no tiene información asignada');
@@ -209,14 +220,21 @@ export const authService = {
   validateRole(role: 'Operador' | 'Coordinador'): boolean {
     const user = this.getCurrentUser();
     const currentRole = this.getCurrentRole();
-    
     if (currentRole !== role) {
       return false;
     }
     
     // Verificar que la información del rol no sea null
-    if (role === 'Operador' && !user?.operador) {
-      return false;
+    if (role === 'Operador') {
+      if (!user?.operador) {
+        return false;
+      }
+      
+      // Verificar que tenga estación asignada
+      
+      if (user.operador.id_estacion === 0 || user.operador.nro_estacion === 0) {
+        return false;
+      }
     }
     
     if (role === 'Coordinador' && !user?.coordinador) {
@@ -224,6 +242,38 @@ export const authService = {
     }
     
     return true;
+  },
+  
+  validateOperadorEstacion(): { tieneEstacion: boolean; mensaje?: string } {
+    const user = this.getCurrentUser();
+    const currentRole = this.getCurrentRole();
+    
+    if (currentRole !== 'Operador') {
+      return { tieneEstacion: true }; // Solo aplica a operadores
+    }
+    
+    if (!user?.operador) {
+      return { 
+        tieneEstacion: false, 
+        mensaje: 'El operador no tiene información asignada' 
+      };
+    }
+    
+    if (user.operador.id_estacion === 0) {
+      return { 
+        tieneEstacion: false, 
+        mensaje: 'El operador no tiene una estación asignada. Contacte a soporte.' 
+      };
+    }
+    
+    if (user.operador.nro_estacion === 0) {
+      return { 
+        tieneEstacion: false, 
+        mensaje: 'El operador no tiene una estación asignada. Contacte a soporte.' 
+      };
+    }
+    
+    return { tieneEstacion: true };
   },
 
   getRedirectPath(): string {
@@ -365,6 +415,16 @@ axios.interceptors.response.use(
     const originalRequest = error.config;
     
     if (error.response?.status === 401 && !originalRequest._retry) {
+      
+      // Verificar si es una ruta de login o refresh
+      const isLoginRequest = originalRequest.url.includes('/api/token/') && !originalRequest.url.includes('/refresh/');
+      const isRefreshRequest = originalRequest.url.includes('/api/token/refresh/');
+
+      if (isLoginRequest || isRefreshRequest) {
+        // No intentar refrescar token para login/refresh fallidos
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
       
       try {
@@ -372,8 +432,11 @@ axios.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return axios(originalRequest);
       } catch (refreshError) {
-        authService.logout();
-        window.location.href = '/login';
+        // Solo redirigir si realmente había una sesión activa
+        if (authService.isAuthenticated()) {
+          authService.logout();
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }
