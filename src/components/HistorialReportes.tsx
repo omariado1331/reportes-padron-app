@@ -82,7 +82,8 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
     return fecha.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'UTC'
     });
   };
 
@@ -90,7 +91,8 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
     const fecha = new Date(fechaStr);
     return fecha.toLocaleTimeString('es-ES', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'UTC'
     });
   };
 
@@ -348,14 +350,14 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
                 </tr>
               ) : (
                 currentItems.map((reporte, index) => (
-                  <React.Fragment key={`${reporte.fecha_registro}-${index}`}>
+                  <React.Fragment key={`${reporte.fecha_reporte}-${index}`}>
                     <tr className={`hover:bg-gray-50 ${expandedRow === index ? 'bg-blue-50' : ''}`}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <p className="text-sm font-medium text-gray-900">
                             {formatFecha(reporte.fecha_reporte)}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 hidden">
                             <Clock className="inline h-3 w-3 mr-1" />
                             {formatHora(reporte.fecha_registro)}
                           </p>
