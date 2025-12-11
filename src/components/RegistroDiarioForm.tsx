@@ -43,10 +43,16 @@ const reporteSchema = z.object({
   contador_final_r: z.string()
     .min(1, 'El contador final R es requerido')
     .regex(/^\d{1,5}$/, 'Debe ser un número de hasta 4 dígitos'),
-  nro_tramite_c: z.string()
+  nro_tramite_inicial_c: z.string()
     .min(1, 'El número de trámite C es requerido')
     .regex(/^\d$/, 'Debe ser un solo dígito'),
-  nro_tramite_r: z.string()
+  nro_tramite_final_c: z.string()
+    .min(1, 'El número de trámite C es requerido')
+    .regex(/^\d$/, 'Debe ser un solo dígito'),  
+  nro_tramite_inicial_r: z.string()
+    .min(1, 'El número de trámite R es requerido')
+    .regex(/^\d$/, 'Debe ser un solo dígito'),
+  nro_tramite_final_r: z.string()
     .min(1, 'El número de trámite R es requerido')
     .regex(/^\d$/, 'Debe ser un solo dígito'),
   nro_saltos_c: z.string().default("0"),
@@ -119,8 +125,10 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
     defaultValues: {
       fecha_reporte: new Date().toISOString().split('T')[0],
       nro_estacion: nroEstacion.toString().padStart(5, '0'),
-      nro_tramite_c: "0",
-      nro_tramite_r: "0",
+      nro_tramite_inicial_c: "0",
+      nro_tramite_final_c: "0",
+      nro_tramite_inicial_r: "0",
+      nro_tramite_final_r: "0",
       incidencias: "",
       observaciones: "",
       contador_inicial_c: "",
@@ -133,8 +141,10 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
   // Observar cambios en los contadores para calcular diferencias en tiempo real
   const watchContadores = watch(['contador_inicial_c', 'contador_final_c', 'contador_inicial_r', 'contador_final_r']);
   const watchNroEstacion = watch('nro_estacion');
-  const watchTramiteC = watch('nro_tramite_c');
-  const watchTramiteR = watch('nro_tramite_r');
+  const watchTramiteInicialC = watch('nro_tramite_inicial_c');
+  const watchTramiteFinalC = watch('nro_tramite_final_c');
+  const watchTramiteInicialR = watch('nro_tramite_inicial_r');
+  const watchTramiteFinalR = watch('nro_tramite_final_r');
 
   // Calcular registros en tiempo real
   const registroC = React.useMemo(() => {
@@ -161,24 +171,24 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
 
   // Generar formatos en tiempo real
   const formatoInicialC = React.useMemo(() => {
-    if (!watchContadores[0] || !watchTramiteC) return '-----';
-    return `C-${watchNroEstacion}-${watchContadores[0].padStart(4, '0')}-${watchTramiteC}`;
-  }, [watchContadores[0], watchNroEstacion, watchTramiteC]);
+    if (!watchContadores[0] || !watchTramiteInicialC) return '-----';
+    return `C-${watchNroEstacion}-${watchContadores[0].padStart(4, '0')}-${watchTramiteInicialC}`;
+  }, [watchContadores[0], watchNroEstacion, watchTramiteInicialC]);
 
   const formatoFinalC = React.useMemo(() => {
-    if (!watchContadores[1] || !watchTramiteC) return '-----';
-    return `C-${watchNroEstacion}-${watchContadores[1].padStart(4, '0')}-${watchTramiteC}`;
-  }, [watchContadores[1], watchNroEstacion, watchTramiteC]);
+    if (!watchContadores[1] || !watchTramiteFinalC) return '-----';
+    return `C-${watchNroEstacion}-${watchContadores[1].padStart(4, '0')}-${watchTramiteFinalC}`;
+  }, [watchContadores[1], watchNroEstacion, watchTramiteFinalC]);
 
   const formatoInicialR = React.useMemo(() => {
-    if (!watchContadores[2] || !watchTramiteR) return '-----';
-    return `R-${watchNroEstacion}-${watchContadores[2].padStart(4, '0')}-${watchTramiteR}`;
-  }, [watchContadores[2], watchNroEstacion, watchTramiteR]);
+    if (!watchContadores[2] || !watchTramiteInicialR) return '-----';
+    return `R-${watchNroEstacion}-${watchContadores[2].padStart(4, '0')}-${watchTramiteInicialR}`;
+  }, [watchContadores[2], watchNroEstacion, watchTramiteInicialR]);
 
   const formatoFinalR = React.useMemo(() => {
-    if (!watchContadores[3] || !watchTramiteR) return '-----';
-    return `R-${watchNroEstacion}-${watchContadores[3].padStart(4, '0')}-${watchTramiteR}`;
-  }, [watchContadores[3], watchNroEstacion, watchTramiteR]);
+    if (!watchContadores[3] || !watchTramiteFinalR) return '-----';
+    return `R-${watchNroEstacion}-${watchContadores[3].padStart(4, '0')}-${watchTramiteFinalR}`;
+  }, [watchContadores[3], watchNroEstacion, watchTramiteFinalR]);
 
   // Cargar centros de empadronamiento al montar el componente
   useEffect(() => {
@@ -654,7 +664,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <h3 className="text-lg font-semibold text-gray-800">Contador R (Registros nuevos)</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div>
                 <Input
                   type="number"
@@ -671,11 +681,27 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <div>
                 <Input
                   type="number"
+                  label="N° Trámite Inicial R"
+                  {...register('nro_tramite_inicial_r')}
+                  error={errors.nro_tramite_inicial_r?.message}
+                  disabled={isLoading}
+                  placeholder="0-9"
+                  min="0"
+                  max="9"
+                />
+              </div>
+
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <Input
+                  type="number"
                   label="Contador Final R"
                   {...register('contador_final_r')}
                   error={errors.contador_final_r?.message}
                   disabled={isLoading}
-                  placeholder="Ej: 5678"
+                  placeholder="Ej: 1234"
                   min="0"
                   max="99999"
                 />
@@ -684,16 +710,15 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <div>
                 <Input
                   type="number"
-                  label="N° Trámite R"
-                  {...register('nro_tramite_r')}
-                  error={errors.nro_tramite_r?.message}
+                  label="N° Trámite Final R"
+                  {...register('nro_tramite_final_r')}
+                  error={errors.nro_tramite_final_r?.message}
                   disabled={isLoading}
                   placeholder="0-9"
                   min="0"
                   max="9"
                 />
               </div>
-
               <div>
                 <Input
                     type="number"
@@ -707,6 +732,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                     defaultValue="0"
                     />
                 </div>
+
             </div>
 
             {/* Vista previa formato R - ACTUALIZADO EN TIEMPO REAL */}
@@ -745,7 +771,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <h3 className="text-lg font-semibold text-gray-800">Contador C (Cambios)</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div>
                 <Input
                   type="number"
@@ -762,11 +788,27 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <div>
                 <Input
                   type="number"
+                  label="N° Trámite Inicial C"
+                  {...register('nro_tramite_inicial_c')}
+                  error={errors.nro_tramite_inicial_c?.message}
+                  disabled={isLoading}
+                  placeholder="0-9"
+                  min="0"
+                  max="9"
+                />
+              </div>
+              
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <Input
+                  type="number"
                   label="Contador Final C"
                   {...register('contador_final_c')}
                   error={errors.contador_final_c?.message}
                   disabled={isLoading}
-                  placeholder="Ej: 5678"
+                  placeholder="Ej: 1234"
                   min="0"
                   max="99999"
                 />
@@ -775,17 +817,17 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
               <div>
                 <Input
                   type="number"
-                  label="N° Trámite C"
-                  {...register('nro_tramite_c')}
-                  error={errors.nro_tramite_c?.message}
+                  label="N° Trámite Final C"
+                  {...register('nro_tramite_final_c')}
+                  error={errors.nro_tramite_final_c?.message}
                   disabled={isLoading}
                   placeholder="0-9"
                   min="0"
                   max="9"
                 />
               </div>
-              
-                <div>
+
+              <div>
                     <Input
                     type="number"
                     label="N° Saltos C"
@@ -801,6 +843,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
 
             </div>
 
+            
             {/* Vista previa formato C - ACTUALIZADO EN TIEMPO REAL */}
             <div className="bg-white border border-gray-300 rounded-lg p-4 mb-4">
               <div className="flex items-center justify-between">

@@ -2,6 +2,7 @@ import axios from 'axios';
 //import { get } from 'react-hook-form';
 
 const API_URL = '/api/'; // URL API
+//const API_URL = 'http://localhost:8000/'; // URL API
 
 // Cuerpo del login
 interface LoginCredentials {
@@ -103,8 +104,10 @@ export interface ReporteFormData {
   contador_final_c: string; // 4 dígitos
   contador_inicial_r: string; // 4 dígitos
   contador_final_r: string; // 4 dígitos
-  nro_tramite_c: string; // 1 dígito
-  nro_tramite_r: string; // 1 dígito
+  nro_tramite_inicial_c: string; // 1 dígito
+  nro_tramite_final_c: string; // 1 dígito
+  nro_tramite_inicial_r: string; // 1 dígito
+  nro_tramite_final_r: string; // 1 dígito
   nro_saltos_c?: string;
   nro_saltos_r?: string;
   incidencias?: string;
@@ -232,7 +235,7 @@ export const authService = {
       throw new Error('No refresh token available');
     }
 
-    const response = await axios.post(`${API_URL}/api/token/refresh/`, {
+    const response = await axios.post(`${API_URL}token/refresh/`, {
       refresh: refreshToken
     });
     
@@ -336,10 +339,10 @@ export const authService = {
     }
 
     // Formatear los contadores según el formato requerido
-    const contadorInicialC = `C-${reporte.nro_estacion}-${reporte.contador_inicial_c.padStart(4, '0')}-${reporte.nro_tramite_c}`;
-    const contadorFinalC = `C-${reporte.nro_estacion}-${reporte.contador_final_c.padStart(4, '0')}-${reporte.nro_tramite_c}`;
-    const contadorInicialR = `R-${reporte.nro_estacion}-${reporte.contador_inicial_r.padStart(4, '0')}-${reporte.nro_tramite_r}`;
-    const contadorFinalR = `R-${reporte.nro_estacion}-${reporte.contador_final_r.padStart(4, '0')}-${reporte.nro_tramite_r}`;
+    const contadorInicialC = `C-${reporte.nro_estacion}-${reporte.contador_inicial_c.padStart(4, '0')}-${reporte.nro_tramite_inicial_c}`;
+    const contadorFinalC = `C-${reporte.nro_estacion}-${reporte.contador_final_c.padStart(4, '0')}-${reporte.nro_tramite_final_c}`;
+    const contadorInicialR = `R-${reporte.nro_estacion}-${reporte.contador_inicial_r.padStart(4, '0')}-${reporte.nro_tramite_inicial_r}`;
+    const contadorFinalR = `R-${reporte.nro_estacion}-${reporte.contador_final_r.padStart(4, '0')}-${reporte.nro_tramite_final_r}`;
     
     // Calcular registros
     let registroC = 0;
@@ -467,8 +470,8 @@ axios.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       
       // Verificar si es una ruta de login o refresh
-      const isLoginRequest = originalRequest.url.includes('/api/token/') && !originalRequest.url.includes('/refresh/');
-      const isRefreshRequest = originalRequest.url.includes('/api/token/refresh/');
+      const isLoginRequest = originalRequest.url.includes('token/') && !originalRequest.url.includes('/refresh/');
+      const isRefreshRequest = originalRequest.url.includes('token/refresh/');
 
       if (isLoginRequest || isRefreshRequest) {
         // No intentar refrescar token para login/refresh fallidos
