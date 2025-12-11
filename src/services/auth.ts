@@ -344,8 +344,10 @@ export const authService = {
     // Calcular registros
     let registroC = 0;
     let registroR = 0;
-    if ((parseInt(reporte.contador_final_c) + parseInt(reporte.contador_inicial_c) + parseInt(reporte.contador_final_r) + parseInt(reporte.contador_inicial_r)) > 0){
+    if ((parseInt(reporte.contador_final_c) + parseInt(reporte.contador_inicial_c)) > 0){
       registroC = parseInt(reporte.contador_final_c) - parseInt(reporte.contador_inicial_c) - parseInt(reporte.nro_saltos_c || "0") + 1;
+      }
+    if ((parseInt(reporte.contador_final_r) + parseInt(reporte.contador_inicial_r)) > 0){
       registroR = parseInt(reporte.contador_final_r) - parseInt(reporte.contador_inicial_r) - parseInt(reporte.nro_saltos_r || "0") + 1;
     }
     
