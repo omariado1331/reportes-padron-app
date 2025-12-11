@@ -33,16 +33,16 @@ const reporteSchema = z.object({
     .regex(/^\d{5}$/, 'Debe ser un número de exactamente 5 dígitos'),
   contador_inicial_c: z.string()
     .min(1, 'El contador inicial C es requerido')
-    .regex(/^\d{1,4}$/, 'Debe ser un número de hasta 4 dígitos'),
+    .regex(/^\d{1,5}$/, 'Debe ser un número de hasta 4 dígitos'),
   contador_final_c: z.string()
     .min(1, 'El contador final C es requerido')
-    .regex(/^\d{1,4}$/, 'Debe ser un número de hasta 4 dígitos'),
+    .regex(/^\d{1,5}$/, 'Debe ser un número de hasta 4 dígitos'),
   contador_inicial_r: z.string()
     .min(1, 'El contador inicial R es requerido')
-    .regex(/^\d{1,4}$/, 'Debe ser un número de hasta 4 dígitos'),
+    .regex(/^\d{1,5}$/, 'Debe ser un número de hasta 4 dígitos'),
   contador_final_r: z.string()
     .min(1, 'El contador final R es requerido')
-    .regex(/^\d{1,4}$/, 'Debe ser un número de hasta 4 dígitos'),
+    .regex(/^\d{1,5}$/, 'Debe ser un número de hasta 4 dígitos'),
   nro_tramite_c: z.string()
     .min(1, 'El número de trámite C es requerido')
     .regex(/^\d$/, 'Debe ser un solo dígito'),
@@ -664,7 +664,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                   disabled={isLoading}
                   placeholder="Ej: 1234"
                   min="0"
-                  max="9999"
+                  max="99999"
                 />
               </div>
 
@@ -677,7 +677,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                   disabled={isLoading}
                   placeholder="Ej: 5678"
                   min="0"
-                  max="9999"
+                  max="99999"
                 />
               </div>
 
@@ -703,7 +703,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                     disabled={isLoading}
                     placeholder="Ej: 0"
                     min="0"
-                    max="9999"
+                    max="999"
                     defaultValue="0"
                     />
                 </div>
@@ -755,7 +755,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                   disabled={isLoading}
                   placeholder="Ej: 1234"
                   min="0"
-                  max="9999"
+                  max="99999"
                 />
               </div>
 
@@ -768,7 +768,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                   disabled={isLoading}
                   placeholder="Ej: 5678"
                   min="0"
-                  max="9999"
+                  max="99999"
                 />
               </div>
 
@@ -794,7 +794,7 @@ const RegistroDiarioForm: React.FC<RegistroDiarioFormProps> = ({
                     disabled={isLoading}
                     placeholder="Ej: 0"
                     min="0"
-                    max="9999"
+                    max="999"
                     defaultValue="0"
                     />
                 </div>
