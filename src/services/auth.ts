@@ -445,12 +445,11 @@ async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHist
     return response.data;
   },
 
-  async eliminarReporte(reporteId: number) {
+  async eliminarReporte(reporteId: number): Promise<any> {
     const token = this.getAccessToken();
     if (!token) {
       throw new Error('No autenticado');
     }
-
     const response = await axios.delete(
       `${API_URL}api/reportesdiarios/${reporteId}/`, 
       {
