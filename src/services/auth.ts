@@ -145,6 +145,7 @@ export interface ReporteDiarioHistorico {
 }
 
 export interface ReporteDiarioItem {
+  id_reporte : number;
   codigo_estacion: string;
   nro_estacion: number;
   fecha_reporte: string;
@@ -426,7 +427,7 @@ async buscarEstacionPorNumero(nroEstacion: string): Promise<Estacion | undefined
     }
 },
 
-  async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHistorico> {
+async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHistorico> {
     const token = this.getAccessToken();
     if (!token) {
       throw new Error('No autenticado');
@@ -444,6 +445,22 @@ async buscarEstacionPorNumero(nroEstacion: string): Promise<Estacion | undefined
     return response.data;
   },
 
+  async eliminarReporte(reporteId: number) {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No autenticado');
+    }
+
+    const response = await axios.delete(
+      `${API_URL}api/reportesdiarios/${reporteId}/`, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return response.data;
+  },
 
 };
 

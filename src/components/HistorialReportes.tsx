@@ -15,7 +15,8 @@ import {
   AlertCircle,
   Clock,
   Building,
-  Loader2
+  Loader2,
+  Trash2
 } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
@@ -34,6 +35,9 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [eliminandoReporte, setEliminandoReporte] = useState<number | null>(null);
+  const [eliminacionError, setEliminacionError] = useState<string | null>(null);
+  const [eliminacionExito, setEliminacionExito] = useState(false);
 
   useEffect(() => {
     cargarHistorial();
@@ -49,6 +53,37 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
       setError(err.response?.data?.message || err.message || 'Error al cargar historial');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEliminarReporte = async (reporteId: number, index: number) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este reporte?\nEsta acción no se puede deshacer.')) {
+      return;
+    }
+
+    setEliminandoReporte(reporteId);
+    setEliminacionError(null);
+    setEliminacionExito(false);
+
+    try {
+      await authService.eliminarReporte(reporteId);
+
+      if (historial) {
+        const nuevosData = historial.data.filter((_, i) => i !== index);
+        setHistorial({
+          ...historial,
+          data: nuevosData,
+          total_reportes: nuevosData.length
+        })
+      }
+
+      setEliminacionExito(true);
+      setTimeout(() => setEliminacionExito(false), 3000);
+
+    } catch (error: any) {
+      setEliminacionError(error.response?.data?.message || error.message || 'Error al eliminar el reporte');
+    } finally {
+      setEliminandoReporte(null);
     }
   };
 
@@ -260,6 +295,26 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
             </Button>
           </div>
         ) : null}
+
+        {eliminacionError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
+            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-red-800">Error al eliminar reporte</p>
+              <p className="text-sm text-red-600 mt-1">{eliminacionError}</p>
+            </div>
+          </div>
+        )}
+
+        {eliminacionExito && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3">
+            <FileText className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-green-800">Reporte eliminado exitosamente</p>
+              <p className="text-sm text-green-600 mt-1">El reporte ha sido eliminado del sistema.</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Resumen estadístico */}
@@ -335,12 +390,15 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Acciones
                 </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Eliminar
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
+                  <td colSpan={7} className="px-6 py-12 text-center">
                     <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">No se encontraron reportes</p>
                     {searchTerm || fechaFilter || estacionFilter ? (
@@ -421,12 +479,34 @@ const HistorialReportes: React.FC<HistorialReportesProps> = ({ operadorId }) => 
                           )}
                         </Button>
                       </td>
+
+                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
+                        <Button 
+                          variant="ghost"
+                          size="sm"
+                          onClick={()=> handleEliminarReporte(reporte.id_reporte, index)}
+                          disabled= {eliminandoReporte === index}
+                          className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                        >
+                          {eliminandoReporte === index ? (
+                            <>
+                              <Loader2 className='h-4 w-4 mr-1 animate-spin' />
+                              Eliminando ...  
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Eliminar 
+                            </>
+                          )}
+                        </Button>
+                      </td>
                     </tr>
                     
                     {/* Fila expandida */}
                     {expandedRow === index && (
                       <tr className="bg-blue-50">
-                        <td colSpan={6} className="px-6 py-4">
+                        <td colSpan={7} className="px-6 py-4">
                           <div className="bg-white rounded-lg border border-gray-200 p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
