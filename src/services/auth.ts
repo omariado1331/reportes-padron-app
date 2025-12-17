@@ -172,7 +172,7 @@ export interface Operador {
   direccion: string | null;
   correo: string | null;
   celular: string | null;
-  entregaBackup: boolean;
+  entrega_backup: boolean;
   user: number;
   ruta: number | null;
   megacentro: number | null;
@@ -517,10 +517,12 @@ async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHist
     if (!token) {
       throw new Error('No autenticado');
     }
+    const payload = {
+      entrega_backup: entregaBackup
+    }
 
     const response = await axios.patch(
-      `${API_URL}/api/operadores/${operadorId}/`,
-      { entregaBackup },
+      `${API_URL}api/operadores/${operadorId}/`, payload,
       {
         headers: {
           Authorization: `Bearer ${token}`,

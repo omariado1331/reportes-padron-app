@@ -97,8 +97,8 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
     
     setTotalOperadores(operadoresFiltrados.length);
     
-    const conBackup = operadoresFiltrados.filter(op => op.entregaBackup).length;
-    const sinBackup = operadoresFiltrados.filter(op => !op.entregaBackup).length;
+    const conBackup = operadoresFiltrados.filter(op => op.entrega_backup).length;
+    const sinBackup = operadoresFiltrados.filter(op => !op.entrega_backup).length;
     
     setOperadoresConBackup(conBackup);
     setOperadoresSinBackup(sinBackup);
@@ -163,7 +163,7 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
       await authService.actualizarEntregaBackup(operadorEncontrado.id, true);
       
       // Actualizar estado local
-      const updatedOperador = { ...operadorEncontrado, entregaBackup: true };
+      const updatedOperador = { ...operadorEncontrado, entrega_backup: true };
       setOperadorEncontrado(updatedOperador);
       
       // Actualizar lista de operadores
@@ -344,8 +344,8 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
                   <span className={`text-xs px-2 py-1 rounded-full ${getTipoOperadorColor(operadorEncontrado.tipo_operador)}`}>
                     {operadorEncontrado.tipo_operador}
                   </span>
-                  <span className={`flex items-center space-x-1 text-sm ${operadorEncontrado.entregaBackup ? 'text-green-600' : 'text-red-600'}`}>
-                    {operadorEncontrado.entregaBackup ? (
+                  <span className={`flex items-center space-x-1 text-sm ${operadorEncontrado.entrega_backup ? 'text-green-600' : 'text-red-600'}`}>
+                    {operadorEncontrado.entrega_backup ? (
                       <>
                         <CheckCircle className="h-4 w-4" />
                         <span>TRANSMITIDO</span>
@@ -360,7 +360,7 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
                 </div>
               </div>
               
-              {!operadorEncontrado.entregaBackup && (
+              {!operadorEncontrado.entrega_backup && (
                 <Button
                   onClick={handleActualizarBackup}
                   className="bg-green-600 hover:bg-green-700"
@@ -372,9 +372,9 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
             </div>
 
             {/* Aviso de estado de backup */}
-            <div className={`mb-4 p-4 rounded-lg ${operadorEncontrado.entregaBackup ? 'bg-green-50 border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <div className={`mb-4 p-4 rounded-lg ${operadorEncontrado.entrega_backup ? 'bg-green-50 border-green-200' : 'bg-red-50 border border-red-200'}`}>
               <div className="flex items-center space-x-3">
-                {operadorEncontrado.entregaBackup ? (
+                {operadorEncontrado.entrega_backup ? (
                   <>
                     <CheckCircle className="h-6 w-6 text-green-600" />
                     <div>
@@ -562,7 +562,7 @@ const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinador
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          {operador.entregaBackup ? (
+                          {operador.entrega_backup ? (
                             <>
                               <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
                               <span className="text-sm text-green-700">Transmitido</span>
