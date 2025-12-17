@@ -21,16 +21,18 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 
 interface DashboardCoordinadorProps {
-  coordinadorId: number;
+  coordinadorId?: number;
 }
 
-const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = () => {
+const CoordinadorDashboard: React.FC<DashboardCoordinadorProps> = ( {coordinadorId}) => {
   const [operadores, setOperadores] = useState<Operador[]>([]);
   const [, setReportesDiarios] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingOperadores, setLoadingOperadores] = useState(false);
   const [, setLoadingReportes] = useState(false);
-  
+  const id = coordinadorId || 0;
+  console.log(id);
+
   // Estados para búsqueda
   const [searchCarnet, setSearchCarnet] = useState('');
   const [operadorEncontrado, setOperadorEncontrado] = useState<Operador | null>(null);
