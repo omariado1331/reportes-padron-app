@@ -161,6 +161,25 @@ export interface ReporteDiarioItem {
   nombre_ruta: string;
 }
 
+export interface Operador {
+  id: number;
+  estado: string;
+  tipo_operador: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  carnet: string;
+  direccion: string | null;
+  correo: string | null;
+  celular: string | null;
+  entregaBackup: boolean;
+  user: number;
+  ruta: number | null;
+  megacentro: number | null;
+  coordinador: number | null;
+  estacion: number | null;
+}
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await axios.post(`${API_URL}api/token/`, {
@@ -333,6 +352,22 @@ export const authService = {
     return response.data;
   },
 
+   async getReportesDiarios(): Promise<any[]> {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No autenticado');
+    }
+
+    const response = await axios.get(`${API_URL}api/reportesdiarios/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    return response.data;
+  },
+
   async enviarReporteDiario(reporte: ReporteFormData, operadorId: number, estacionId: number, centroEmpadronamientoId: number): Promise<any> {
     const token = this.getAccessToken();
     if (!token) {
@@ -460,6 +495,43 @@ async getHistorialReportesDiarios(operadorId: number): Promise<ReporteDiarioHist
     );
     return response.data;
   },
+
+  async getOperadores(): Promise<Operador[]> {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No autenticado');
+    }
+
+    const response = await axios.get(`${API_URL}/api/operadores/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    return response.data;
+  },
+
+  async actualizarEntregaBackup(operadorId: number, entregaBackup: boolean): Promise<any> {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No autenticado');
+    }
+
+    const response = await axios.patch(
+      `${API_URL}/api/operadores/${operadorId}/`,
+      { entregaBackup },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    
+    return response.data;
+  }
+
 
 };
 
